@@ -1,0 +1,98 @@
+#gridMain * {font-size: 16px !important;}
+#gridMain table th,
+#gridMain table td
+{font-size: 16px !important;}
+
+#mapDiv{ width: 99%; padding: 5px; border: black 1px dashed;}
+#menuDiv{ height: 80vh;  }
+
+#mapCont { width: 100%; height: 100%; }
+.mapTile { border: #000170 solid 1px}
+
+@media only screen and (min-width: 1425px) {
+
+    #gridMain{position: relative}
+
+    #mapDiv {
+        width: 40%;
+        float: left;
+    }
+    #menuDiv {
+        /*width: 59%;*/
+        /*float: left;*/
+    }
+    #mapCont{
+        height: 75vh;
+    }
+}
+
+#infoButton { align-self: end; border: black 1px dashed !important; margin: 5px }
+#infoButton span{ font-size: initial; padding: 5px 0 5px 5px; }
+#infoButton img{ width: 20px; height: 20px; padding: 5px }
+
+#infoDiv p,
+#infoDiv ul {font-size: 16px !important;}
+
+#tankDiv {  border:1px dashed black !important; }
+
+#commandsDiv { height: 72vh; min-width: 315px; border:1px dashed black;}
+
+#commands th{ position: sticky; top: 0; height: 5px; font-size: 10px !important;}
+#commands td,
+#commands th{ text-align: center; background: #EEE; border:  2px solid black; }
+#commands tr > td:nth-child(1){ width: 20px}
+
+#uploadAlg, #uploadMap {display: none; width:0; height: 0}
+#labelFor_uploadAlg, #labelFor_uploadMap {border: 1px solid black; cursor: pointer;}
+
+.selectedRow {
+    border: 4px  solid  #F00 ;
+}
+.currentRow{
+    border: 4px solid  #0A0 ;
+}
+.selectedRow.currentRow{
+    border-left: 4px solid  #F00 !important;
+    border-right: 4px solid  #F00 !important;
+}
+
+.gameButtonsColumn { min-width: 60px; }
+
+
+.gameTD{
+    margin: 2px;
+    width: 50px;
+    height: 50px;
+}
+
+#gameButtons { display: flex; flex-wrap: wrap; justify-content:space-evenly }
+
+.driver.selected{ border: #C00 solid 3px !important; }
+.gunner.selected{ border: #0C0 solid 3px !important; }
+.charger.selected{ border: #00C solid 3px !important; }
+
+.flex-column{ display: flex; flex-direction: column; align-items: center}
+.flex-row{ display: flex; flex-direction: row; align-items: center}
+.flex-justify-start {justify-content: flex-start;}
+.flex-justify-end {justify-content: flex-end;}
+.flex-justify-center {justify-content: center;}
+.flex-justify-evenly {justify-content:space-evenly;}
+.flex-justify-between {justify-content:space-between;}
+.flex-align-start {align-items: flex-start;}
+.flex-align-end {align-items: flex-end;}
+.flex-wrap {flex-wrap: wrap}
+
+.padding-1 {padding: 1px;}
+.padding-2 {padding: 2px;}
+.padding-5 {padding: 5px;}
+.padding-10 {padding: 10px;}
+.margin-1 {margin: 1px;}
+.margin-2 {margin: 2px;}
+.margin-5 {margin: 5px;}
+.margin-10 {margin: 10px;}
+
+.widthAll { width: 100%; }
+.overflow { overflow: auto}
+.overflow-visible { overflow: scroll}
+.overflow-x-visible { overflow-x: scroll}
+.overflow-y-visible { overflow-y: scroll}

@@ -1,0 +1,39 @@
+.overflow,
+.overflow-visible,
+.ReactModal__Body--open
+{
+    scrollbar-color: #777777 #F5F5F5;
+    scrollbar-width: thin;
+}
+
+.overflow::-webkit-scrollbar-track,
+.overflow-visible::-webkit-scrollbar-track,
+.ReactModal__Body--open::-webkit-scrollbar-track
+{
+    border: 1px solid black;
+    background-color: #F5F5F5;
+}
+
+.overflow::-webkit-scrollbar,
+.overflow-visible::-webkit-scrollbar,
+.ReactModal__Body--open::-webkit-scrollbar
+{
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+.overflow::-webkit-scrollbar-thumb,
+.overflow-visible::-webkit-scrollbar-thumb,
+.ReactModal__Body--open::-webkit-scrollbar-thumb
+{
+    background-color: #000000;
+}
+
+.ReactModal__Body--open,
+.ReactModal__Html--open{
+    overflow: hidden;
+}
+
+.ReactModal__Overlay{
+    z-index: 99999;
+}

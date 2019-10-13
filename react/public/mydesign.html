@@ -1,0 +1,264 @@
+<script>
+    window.setTimeout(function () {
+        location.reload()
+    }, 3000000)
+</script>
+<link rel="stylesheet" type="text/css" href="../src/styles/game.css" >
+<script type="text/javascript">
+    function ViewButtons(e) {
+
+        let pattern = e.id;
+
+        if (pattern === "all")
+        {
+            $("#gameButtons button").show();
+            return;
+        }
+        $("#gameButtons button").hide();
+        $("#gameButtonsDiv ." + pattern).show();
+    }
+</script>
+<div class="frame_cnt" >
+    <div id="snavigator">Танковый Экипаж</div>
+    <div id="gridMain">
+        <div id="map">
+            <img src="карта.PNG" alt="">
+        </div>
+        <div id="Right">
+            <div class="flex-row">
+                <div class="flex-column flex-justify-start widthAll">
+                    <div class="flex-column">
+                        <span>Скорость воспроизведения</span>
+                        <div>
+                            <input type="range" id="hhh" value="50" oninput="document.getElementById('speedVal').innerText = document.getElementById('hhh').value" >
+                            <span id="speedVal">50</span>
+                        </div>
+                    </div>
+                    <div id="moveBtnDiv" class="flex-row">
+                        <button><img src="../src/images/menu/startbtn.svg" alt=""></button>
+                        <button><img src="../src/images/menu/pausebtn.svg" alt=""></button>
+                        <button><img src="../src/images/menu/stopbtn.svg" alt=""></button>
+                        <button><img src="../src/images/menu/skipbtn.svg" alt=""></button>
+                        <button><img src="../src/images/menu/nextstepbtn.svg" alt=""></button>
+                    </div>
+                    <div style="text-align: right">
+                        <span>Дальность стрельбы: </span>
+                        <span>10</span>
+                    </div>
+                    <div id="saveBtnDiv" >
+                        <button>
+                            <img src="../src/images/menu/savebtn.svg" alt="">
+                        </button>
+                        <button>
+                            <img src="../src/images/menu/loadbtn.svg" alt="">
+                        </button>
+                        <button>
+                            <img src="" alt="">
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-column flex-justify-evenly">
+                    <button id="infoButton" class="flex-row">
+                        <span>INFO</span>
+                        <img src="../src/images/menu/infobtn.svg" alt="">
+                    </button>
+                    <div id="tankDiv">
+                        <img src="../src/images/game/tank.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div id="commandsDiv">
+                        <table id="commands"  >
+                            <tr>
+                                <th>#</th>
+                                <th>Наводчик</th>
+                                <th>Водитель</th>
+                                <th>Заряжающий</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                </div>
+                <div id="gameButtonsDiv" >
+                    <div id="gameButtonsHead">
+                        <button id="all" class="widthAll" onclick="ViewButtons(this)">
+                            Все
+                        </button>
+                        <button id="gunner" class="widthAll" onclick="ViewButtons(this)">
+                            Наводчик
+                        </button>
+                        <button id="driver" class="widthAll" onclick="ViewButtons(this)">
+                            Водитель
+                        </button>
+                        <button id="charger" class="widthAll" onclick="ViewButtons(this)">
+                            Заряжающий
+                        </button>
+                    </div>
+                    <div id="gameButtons">
+                        <button class="gunner" style=";background: url('../src/images/actionbtns.svg') 0px 0px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') -50px 0px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') -100px 0px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') 0px -50px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') -50px -50px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') -100px -50px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') 0px -100px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="gunner" style="background: url('../src/images/actionbtns.svg') -100px -100px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') 0px -150px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -50px -150px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -100px -150px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') 0px -200px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -50px -200px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -100px -200px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -50px -100px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -150px 0px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -200px 0px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -150px -50px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="driver" style="background: url('../src/images/actionbtns.svg') -200px -50px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="charger" style="background: url('../src/images/actionbtns.svg') -150px -100px; left: 0; height: 50px; width: 50px; "/>
+                        <button class="charger" style="background: url('../src/images/actionbtns.svg') -200px -100px; left: 0; height: 50px; width: 50px; "/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<tr>
