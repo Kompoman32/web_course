@@ -1,0 +1,39 @@
+﻿@using MRS_web.Models.EDM
+@{
+    ViewBag.Title = $"Список документов счётчика \"{ViewData["MeterName"]}\"";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportDocuments", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton" type="submit" name="MeterId" value=@ViewData["MeterId"]><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Номер счётчика</th>
+            <th>Заголовок</th>
+            <th>Дата подписания</th>
+            <th>Текст</th>
+        </tr>
+    </thead>
+    @{
+        foreach (Document doc in (IEnumerable<Document>)ViewData["Documents"])
+        {
+            <tr>
+                <td>@doc.Meter.ProductionId</td>
+                <td>@doc.Title</td>
+                <td>@doc.SigningDate.ToString("d")</td>
+                <td>@doc.Discription</td>
+            </tr>
+        }
+    }
+</table>

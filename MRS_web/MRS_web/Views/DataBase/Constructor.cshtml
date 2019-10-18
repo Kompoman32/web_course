@@ -1,0 +1,625 @@
+﻿
+@{
+    ViewBag.Title = "Конструктор запросов";
+}
+
+
+@Scripts.Render("~/scripts/jquery-1.10.2.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#Entity').on('change',
+            function() {
+                entity = this.value;
+                entityName = this.options[this.selectedIndex].text;
+                if (entity == "") {
+                    $('#Expression').empty();
+                    return;
+                }
+                newExpr($('#Expression'));
+            });
+
+        $('#but').click(function(e) {
+            e.preventDefault();
+
+
+            //outputNode.innerHTML += escapedStr;
+
+            var str = nodeToString($('#Expression'));
+
+            $('#blob').attr('value', str);;
+
+            $('#Results').load('@Url.Action("ConstructorGetData")?request=' + encodeURIComponent(str), null, function (data, suc) {
+                if (!suc || data[1] === '!')
+                    $('#excelButton').css('display', 'none');
+                else {
+                    $('#excelButton').attr('value', str);
+                    $('#excelButton').css('display', 'block');
+                }
+            });
+
+            //'<button><img width=30 height=30 src="/Images/Excel.png"></button>');
+        });
+    });
+
+    function nodeToString(node) {
+        var s = "";
+        //alert($(node).prop('tagName'));
+        switch ($(node).prop('tagName')) {
+            case "DIV":
+                $(node).children().each(function () {
+                    s += nodeToString(this);
+                });
+                if (node.innerText === ")")
+                    s += '&end=' + encodeURIComponent(node.innerText);
+                break;
+            case "INPUT":
+            case "SELECT":
+                if (typeof ($(node).prop('name')) !== "undefined")
+                    s += '&' + $(node).prop('name') + '=' + encodeURIComponent(node.value);
+                break;
+
+        }
+        if (s === "" || s === '&' || (s[0]==='&' && s[1]==='='))
+            s = "";
+        return s;
+    }
+
+
+    // ( Entity . Property[.PropertyColl or .PropertyEntity] sign input logic ) logic
+    //
+    // logic = and/or
+    // sign = ==/!= - string,bool; >/</>=/<=/==/!= - number,date,time;
+    // smth - entity,coll
+
+    var entity = "";
+    var entityName = "";
+    var separator = '>';
+
+    function newExpr(div) {
+        div.empty();
+
+        var div4 = $('<div/>');                     // After Combo Entity
+        var sel = $('<select/>');                   // Combo Entity
+        $('<option/>').appendTo(sel);
+        $('<option/>').text('(').appendTo(sel);
+        $('<option/>').text(entityName).appendTo(sel);
+        sel.on('change',
+            function () {
+                if (this.value == "") {
+                    sel.attr('name', '');
+                    div4.empty();
+                    return;
+                }
+
+                if (this.value == entityName) {
+                    sel.attr('name', 'Entity');
+                    div4.empty();
+                    var div5 = $('<div/>');
+                    div5.appendTo(div4);
+                    //$('<div/>').text(separator).appendTo(div5); // separator
+
+
+                    SetProperty(div5, entity);
+
+                    return;
+                }
+
+                if (this.value == "(") {
+                    sel.attr('name', 'start');
+                    div4.empty();
+                    newExpr(div4);
+
+                    $('<div name="end"/>').text(')').appendTo(div4); // )
+
+                    SetLogic(div4);
+                }
+
+            });
+
+        sel.appendTo(div);
+        div4.appendTo(div);
+    }
+
+    //en - entity
+    function SetProperty(div, en) {
+        var property = $('<select/>');
+        $('<option/>').appendTo(property);
+
+        $('#' + en).children().each(function () {
+
+            var option = $('<option/>');
+            option.text(this.innerText);
+            option.appendTo(property);
+        });
+
+        var div2 = $('<div/>');
+        property.on('change', function () { afterProperty(property, div2, en) });
+        property.appendTo(div); // combobox
+        div2.appendTo(div); //div после combobox
+    }
+
+    function SetLogic(div) {
+        var logic = $('<select/>');
+        $('<option/>').appendTo(logic);
+        $('<option/>').text(' И ').appendTo(logic);
+        $('<option/>').text(' ИЛИ ').appendTo(logic);
+        logic.appendTo(div); // and / or
+
+        var div3 = $('<div/>');
+        logic.on('change', function () {
+
+            if (this.value === "") {
+                logic.attr('name', '');
+                div3.empty();
+                return;
+            }
+
+            logic.attr('name', 'Logic');
+
+            if (div3[0].children.length > 0) { return; }
+
+            newExpr(div3);
+        });
+
+        div3.appendTo(div); // new Expr
+    }
+
+    //prop - combobox;   div - div after prop, en - current en
+    function afterProperty(prop, div, en) {
+        div.empty();
+
+        if (prop[0].value == "") return;
+
+        switch ($('#' + en + ' li:contains("' + prop[0].options[prop[0].selectedIndex].text + '")').attr('tag')) {
+            case "string":
+                $(prop).attr('name', 'String');
+                TypeString(div);
+                break;
+            case "integer":
+                $(prop).attr('name', 'Integer');
+                TypeInteger(div);
+                break;
+            case "float":
+                $(prop).attr('name', 'Float');
+                TypeFloat(div);
+                break;
+            case "date":
+                $(prop).attr('name', 'Date');
+                TypeNDate(div);
+                break;
+            case "bool":
+                $(prop).attr('name', 'Bool');
+                TypeBool(div);
+                break;
+            case "time":
+                $(prop).attr('name', 'Time');
+                TypeTime(div);
+                break;
+            case "entity":
+                $(prop).attr('name', 'Entity');
+                TypeEntity(div, $('#' + en + ' li:contains("' + prop[0].options[prop[0].selectedIndex].text + '")').attr('name'));
+                break;
+            case "coll":
+                $(prop).attr('name', 'Collection');
+                TypeColl(div);
+                break;
+            default:
+                return;
+        }
+    }
+
+    // div - where we work
+    function TypeString(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('==').appendTo(sign);
+        $('<option/>').text('!=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+
+            $('<input name="Input"/>').appendTo(div2);
+
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    }
+    function TypeInteger(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('>').appendTo(sign);
+        $('<option/>').text('<').appendTo(sign);
+        $('<option/>').text('>=').appendTo(sign);
+        $('<option/>').text('<=').appendTo(sign);
+        $('<option/>').text('==').appendTo(sign);
+        $('<option/>').text('!=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+            $('<input type="number" name="Input">').appendTo(div2);
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    }
+    function TypeFloat(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('>').appendTo(sign);
+        $('<option/>').text('<').appendTo(sign);
+        $('<option/>').text('>=').appendTo(sign);
+        $('<option/>').text('<=').appendTo(sign);
+        $('<option/>').text('==').appendTo(sign);
+        $('<option/>').text('!=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+            $('<input type="number" step="any" name="Input">').appendTo(div2);
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    }
+    function TypeNDate(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('>').appendTo(sign);
+        $('<option/>').text('<').appendTo(sign);
+        $('<option/>').text('>=').appendTo(sign);
+        $('<option/>').text('<=').appendTo(sign);
+        $('<option/>').text('==').appendTo(sign);
+        $('<option/>').text('!=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+            $('<input type="date" name="Input">').appendTo(div2);
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    };
+    function TypeBool(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('==').appendTo(sign);
+        $('<option/>').text('!=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+
+            var sel = $('<select name="Input">');
+            $('<option/>').text('True').appendTo(sel);
+            $('<option/>').text('False').appendTo(sel);
+            sel.appendTo(div2);
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    };
+    function TypeTime(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('>').appendTo(sign);
+        $('<option/>').text('<').appendTo(sign);
+        $('<option/>').text('>=').appendTo(sign);
+        $('<option/>').text('<=').appendTo(sign);
+        $('<option/>').text('==').appendTo(sign);
+        $('<option/>').text('!=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+
+            $('<input type="time" name="Input">').appendTo(div2);
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    };
+    function TypeEntity(div, en) {
+        div.empty();
+
+        SetProperty(div, en);
+    };
+    function TypeColl(div) {
+        div.empty();
+
+        var sign = $('<select name="Sign" />');
+        $('<option/>').appendTo(sign);
+        $('<option/>').text('Количество >').appendTo(sign);
+        $('<option/>').text('Количество <').appendTo(sign);
+        $('<option/>').text('Количество >=').appendTo(sign);
+        $('<option/>').text('Количество <=').appendTo(sign);
+        $('<option/>').text('Количество ==').appendTo(sign);
+        $('<option/>').text('Количество !=').appendTo(sign);
+
+        var div2 = $('<div/>');                         // div after sign
+
+        sign.on('change', function () {
+            if (this.value == "") {
+                div2.empty();
+                return;
+            }
+
+            if (div2[0].children.length > 0) { return; }
+
+            $('<input type="number" min="0" name="Input">').appendTo(div2);
+            SetLogic(div2);
+        });
+        sign.appendTo(div);
+        div2.appendTo(div);
+    };
+
+</script>
+
+<style>
+    #Expression {
+        padding: 5px;
+    }
+
+    #Expression input {
+        width: 200px
+    }
+
+        #Expression div,
+        #Expression div div,
+        #Expression div div div,
+        #Expression div div div div,
+        #Expression div div div div div {
+            padding: 0;
+            margin-left: 5px;
+            margin-right: 5px;
+            display: flex;
+            justify-content: left;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        #Expression select,
+        #Expression input {
+            height: 40px;
+        }
+
+    #Entities div {
+        height: auto;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        border: solid 2px gray;
+        color: black;
+        background: white;
+    }
+
+    #Legend {
+        padding-right: 10px;
+        padding-bottom: 10px;
+        border: solid 2px white;
+        color: black;
+        background: gray;
+    }
+
+    [tag = integer] {
+        background: orange;
+    }
+
+    [tag = string] {
+        background: aqua;
+    }
+
+    [tag = float] {
+        background: green;
+    }
+
+    [tag = date] {
+        background: violet;
+    }
+
+    [tag = bool] {
+        background: lightcoral;
+    }
+
+    [tag = time] {
+        background: yellow;
+    }
+
+    [tag = entity] {
+        background: red;
+    }
+
+    [tag = coll] {
+        background: darkgoldenrod;
+    }
+</style>
+
+
+
+<h2>@ViewBag.Title</h2>
+<input id="blob" style="display: none" />
+
+<table class="freeTable">
+    <tr>
+        <td id="Entities" style="display: flex;  flex-flow: wrap">
+            <div>
+                <h3>Счётчик</h3>
+                <ul id="Meter">
+                    <li tag="string">Название</li>
+                    <li tag="string">Описание</li>
+                    <li tag="float">Сумма показаний</li>
+                    <li tag="float">Размерность табло</li>
+                    <li tag="integer">Заводской номер</li>
+                    <li tag="date">Дата производства</li>
+                    <li tag="coll">Параметры</li>
+                    <li tag="entity" name="Tariff">Тариф</li>
+                    <li tag="entity" name="Type">Тип</li>
+                    <li tag="coll">Документы</li>
+                    <li tag="entity" name="User">Пользователь</li>
+                    <li tag="coll">Показания</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Уст.Счётчик</h3>
+                <ul id="InstalledMeter">
+                    <li tag="date">Дата установки</li>
+                    <li tag="date">Дата проверки</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Пользователь</h3>
+                <ul id="User">
+                    <li tag="string">Логин</li>
+                    <li tag="string">Полное Имя</li>
+                    <li tag="bool">Администратор?</li>
+                    <li tag="coll">Счётчики</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Тип</h3>
+                <ul id="Type">
+                    <li tag="string">Название</li>
+                    <li tag="string">Ед. измерения</li>
+                    <li tag="coll">Счётчики</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Показатель</h3>
+                <ul id="Reading">
+                    <li tag="float">Значение</li>
+                    <li tag="integer">Номер тарифа</li>
+                    <li tag="entity" name="Meter">Счётчик</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Параметр</h3>
+                <ul id="Parametr">
+                    <li tag="string">Название</li>
+                    <li tag="string">Значение</li>
+                    <li tag="coll">Счётчики</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Тариф</h3>
+                <ul id="Tariff">
+                    <li tag="string">Название</li>
+                    <li tag="coll">Счётчики</li>
+                    <li tag="coll">Врем. промежутки</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Врем. промежуток</h3>
+                <ul id="TimeSpan">
+                    <li tag="string">Название</li>
+                    <li tag="time">Время начала</li>
+                    <li tag="time">Время окончания</li>
+                    <li tag="entity" name="Tariff">Тариф</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Документ</h3>
+                <ul id="Document">
+                    <li tag="string">Заголовок</li>
+                    <li tag="string">Описание</li>
+                    <li tag="date">Дата подписания</li>
+                    <li tag="entity" name="Meter">Счётчик</li>
+                </ul>
+            </div>
+        </td>
+        <td>
+            <div id="Legend">
+                <h3>Легенда</h3>
+                <ul>
+                    <li tag="integer">Целое число</li>
+                    <li tag="string">Строка</li>
+                    <li tag="float">Вещественное число</li>
+                    <li tag="date">Дата</li>
+                    <li tag="bool">Логич. переменная</li>
+                    <li tag="time">Время</li>
+                    <li tag="entity">Сущность</li>
+                    <li tag="coll">Коллекция</li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div style="margin: 10px">
+    Выберите сущность:
+    <select tag="Sel" id="Entity">
+        <option></option>
+        <option value="Meter">Счётчик</option>
+        <option value="InstalledMeter">Уст. счётчик</option>
+        <option value="User">Пользователь</option>
+        <option value="Type">Тип</option>
+        <option value="Reading">Показатель</option>
+        <option value="Parametr">Параметр</option>
+        <option value="Tariff">Тариф</option>
+        <option value="TimeSpan">Врем. промежуток</option>
+        <option value="Document">Документ</option>
+    </select>
+    <br />
+</div>
+
+<button id="but">Найти</button>
+
+<div id="Expression" style="display: flex; flex-flow: wrap; background: white; color: black"></div>
+@using (Html.BeginForm("ConstructorToExcel", "Database"))
+{
+    <button id="excelButton" type="submit" name="request"  style="margin: 5px; display: none"><img width=30 height=30 src="/Images/Excel.png"></button>
+}
+<div class="IncludedView" id="Results"></div>

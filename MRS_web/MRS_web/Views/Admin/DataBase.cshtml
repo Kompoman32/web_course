@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Доступ к базе данных";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<ul>
+    <li>
+        <h3>@Html.ActionLink("Пользователи", "UserList", "Database")</h3>
+    </li>
+    <li>
+        <h3>@Html.ActionLink("Счётчики", "MetersList", "Database")</h3>
+    </li>
+    <li>
+        <h3>@Html.ActionLink("Типы счётчиков", "TypeList", "Database")</h3>
+    </li>
+    <li>
+        <h3>@Html.ActionLink("Тарифы счётчиков", "TariffList", "Database")</h3>
+    </li>
+    <li>
+        <h3>@Html.ActionLink("Параметры счётчиков", "ParameterList", "Database")</h3>
+    </li>
+    <li>
+        <h3>@Html.ActionLink("Конструктор запросов", "Constructor", "Database")</h3>
+    </li>
+</ul>
+

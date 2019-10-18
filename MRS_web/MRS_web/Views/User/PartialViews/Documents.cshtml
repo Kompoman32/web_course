@@ -1,0 +1,13 @@
+﻿@model IEnumerable<MRS_web.Models.EDM.Document>
+
+<select multiple name="documents" style="width: 100%">
+    @{
+        int counter = 0;
+        foreach (var d in Model)
+        {
+            <option name="document" value=@counter>@d</option>
+            counter++;
+        }
+    }
+</select>
+

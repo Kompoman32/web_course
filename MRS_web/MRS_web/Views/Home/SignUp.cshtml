@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Регистрация";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<style>
+    td {
+        font-size: 24px;
+        text-align: right!important;
+    }
+
+    #bSignIn {
+        border-radius: 5px;
+        width: 30%;
+        font-size: 20px
+    }
+
+    input {
+        background: black;
+        color: lime;
+        width: 200px
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    <center>
+        <table class="freeTable">
+            <tr>
+                <td>Полное имя</td>
+                <td><input name="FullName" value=@ViewData["FullName"]></td>
+            </tr>
+            <tr style="margin-bottom: 10px">
+                <td class="error" colspan="2">@Html.ValidationMessage("FullName")</td>
+            </tr>
+            <tr>
+                <td>Логин</td>
+                <td><input name="Login" value=@ViewData["Login"]></td>
+            </tr>
+            <tr style="margin-bottom: 10px">
+                <td class="error" colspan="2">@Html.ValidationMessage("Login")</td>
+            </tr>
+            <tr>
+                <td>Пароль</td>
+                <td><input name="Password" type="password" value=@ViewData["Password"]></td>
+            </tr>
+            <tr style="margin-bottom: 10px">
+                <td class="error" colspan="2">@Html.ValidationMessage("Password")</td>
+            </tr>
+            <tr>
+                <td>Подтверждение</td>
+                <td><input name="PasswordConfirm" type="password"></td>
+            </tr>
+            <tr style="margin-bottom: 10px">
+                <td class="error" colspan="2">@Html.ValidationMessage("PasswordConfirm")</td>
+            </tr>
+        </table>
+        <br/>
+        <button>Зарегестрировать аккаунт</button>
+    </center>
+}

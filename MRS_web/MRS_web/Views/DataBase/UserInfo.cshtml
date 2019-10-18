@@ -1,0 +1,50 @@
+﻿@using MRS_web.Models.EDM
+
+@{
+    User user = ViewData["User"] as User??new User();
+    ViewBag.Title = $"Пользователь \"{user}\"";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportUser", "Database"))
+{
+    string us = user?.Login;
+    <div style="padding: 5px">
+        <button  class="excelButton" type="submit" name="UserLogin" value=@us><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table class="InfoTable">
+    <tr>
+        <td>Логин</td>
+        <td>@user.Login</td>
+    </tr>
+    <tr>
+        <td>Полное имя</td>
+        <td>@user.FullName</td>
+    </tr>
+    <tr>
+        <td>Права администратора</td>
+        @{
+            string s = $"bool{user?.AdminPrivileges}";
+            <td class=@s></td>
+        }
+    </tr>
+    <tr>
+        <td>Счётчики</td>
+        @if (user != null && user.Meters.Any())
+        {
+            <td>@Html.ActionLink("Посмотреть...", "MetersList", "Database", new {userLogin = user?.Login}, null)</td>
+        }
+        else
+        {
+            <td>Отсутствуют</td>
+        }
+    </tr>
+</table>
+

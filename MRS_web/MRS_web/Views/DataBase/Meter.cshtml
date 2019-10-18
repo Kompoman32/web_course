@@ -1,0 +1,129 @@
+﻿@using MRS_web.Models.EDM
+
+@{
+    Meter met = (Meter)ViewData["Meter"];
+    ViewBag.Title = $"Счётчик \"{met.Name}\"";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportMeter", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton" type="submit" name="MeterId" value=@met.ProductionId><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+@{
+<table id="meterTable" class="InfoTable">
+    <tr>
+        <td>Пользователь</td>
+        <td>@met.User.ToString()</td>
+    </tr>
+    <tr>
+        <td>Название</td>
+        <td>@met.Name</td>
+    </tr>
+    <tr>
+        <td>Заводской номер</td>
+        <td>@met.ProductionId</td>
+    </tr>
+    <tr>
+        <td>Дата производства</td>
+        <td name="MeterProductionDate">@met.ProductionDate.ToString("d")</td>
+    </tr>
+    <tr>
+        <td>Тип</td>
+        <td>@met.Type</td>
+    </tr>
+    <tr>
+        <td>Тариф</td>
+        <td>@met.Tariff</td>
+    </tr>
+    <tr>
+        <td>Сумма показаний</td>
+        <td>@met.SumReadings</td>
+    </tr>
+    <tr>
+        <td>Макс. Вместимомсть</td>
+        <td>@met.Capacity</td>
+    </tr>
+    <tr>
+        <td>Показания</td>
+        <td>
+            @if (met.Readings.Count < 2)
+            {
+                @met.Readings.First();
+            }
+            else
+            {
+                @Html.ActionLink("Посмотреть...", "Readings", "Database", new { MeterId = met.ProductionId }, null);
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>Описание</td>
+        <td>@met.Discription</td>
+    </tr>
+    <tr>
+        <td>Документы</td>
+        <td>
+            @if (met.Documents.Count > 0)
+            {
+                @Html.ActionLink("Посмотреть...", "DocumentList", "Database", new { MeterId = met.ProductionId }, null);
+            }
+            else
+            {
+                string s = "Отсутствуют";
+                @s;
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>Параметры</td>
+        <td>
+            @if (met.Parametrs.Count > 0)
+            {
+                @Html.ActionLink("Посмотреть...", "Parameters", "Database", new { MeterId = met.ProductionId }, null);
+            }
+            else
+            {
+                string s = "Отсутствуют";
+                @s;
+            }
+        </td>
+    </tr>
+
+    <tr>
+        <td>Установлен</td>
+        @{
+            string str = "bool" + (met is InstalledMeter);
+            <td class=@str style="background-position: left center; "></td>
+        }
+    </tr>
+    @{
+        InstalledMeter instMet = met as InstalledMeter;
+
+        if (instMet != null)
+        {
+            <tr>
+                <td>Дата установки</td>
+                <td>@instMet.InstallDate.ToString("d")</td>
+            </tr>
+
+            <tr>
+                <td>Дата следующей проверки</td>
+                @{
+                    string style = instMet.ExpirationDate < DateTime.Now ? "background: red; color:white" : "";
+                    <td style=@style>@instMet.ExpirationDate.ToString("d")</td>
+                }
+            </tr>
+        }
+    }
+</table>
+}
+

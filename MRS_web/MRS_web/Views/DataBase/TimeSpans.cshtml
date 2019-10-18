@@ -1,0 +1,41 @@
+﻿@using MRS_web.Models.EDM
+@using TimeSpan = MRS_web.Models.EDM.TimeSpan
+@{
+    ViewBag.Title = $"Список промежтков тарифа \"{ViewData["TariffName"]}\"";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportTimeSpanList", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton" type="submit" name="TariffId" value=@ViewData["TariffId"]><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Тариф</th>
+            <th>Название</th>
+            <th>Время начала</th>
+            <th>Время окончания</th>
+        </tr>
+    </thead>
+    @{
+        foreach (TimeSpan ts in (IEnumerable<TimeSpan>)ViewData["TimeSpans"])
+        {
+            <tr>
+                <td>@ts.Tariff</td>
+                <td>@ts.Name</td>
+                <td>@ts.TimeStart</td>
+                <td>@ts.TimeEnd</td>
+            </tr>
+        }
+    }
+</table>
+

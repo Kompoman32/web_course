@@ -8,6 +8,8 @@
 /* блок для статьи */
 .post {
     margin-bottom: 35px;
+    padding-bottom: 20px;
+    border-bottom: solid 2px black;
 }
 
 .post-content p {
@@ -17,6 +19,11 @@
 
 .post-image {
     margin-bottom: 30px;
+}
+
+.post-image img {
+    max-width: 500px;
+    max-height: 500px;
 }
 
 .category {

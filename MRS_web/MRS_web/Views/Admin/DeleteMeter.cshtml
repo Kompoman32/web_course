@@ -1,0 +1,58 @@
+﻿@using MRS_web.Models.EDM
+
+@{
+    ViewBag.Title = "Удалить счётчик";
+
+    var usersList = (IEnumerable<User>)ViewData["UsersList"];
+    var metersList = (IEnumerable<Meter>)ViewData["MetersList"];
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("DeleteMeter","Admin"))
+{
+    <table class="freeTable">
+        <tr>
+            <td style="text-align: right">
+                Пользователь:
+            </td>
+            <td>
+                <select name="actionDel" onchange="this.form.submit();">
+                    @foreach (var us in usersList)
+                    {
+                        object sel = us.Login.Equals(ViewData["SelectedUserLogin"].ToString()) ? "selected" : null;
+
+                        <option value=@us.Login @sel>@us</option>
+                    }
+                </select>
+                <!--Html.DropDownList("action", usersList, new { , value = "UserLogin"})-->
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: right">
+                Счётчик:
+            </td>
+            <td>
+                <select name="actionDel" onchange="this.form.submit();">
+                    @foreach (var met in metersList)
+                    {
+                        object sel = met.ProductionId.Equals((long)ViewData["SelectedMeterId"]) ? "selected" : null;
+
+
+                        <option value=@met.ProductionId @sel>@met</option>
+                    }
+                </select>
+                <!--Html.DropDownList("action", metersList, new { onchange = "this.form.submit();" })-->
+            </td>
+        </tr>
+    </table>
+
+    <div class="IncludedView">
+        @RenderPage("~/Views/DataBase/Meter.cshtml")
+    </div>
+    <br />
+
+    <p>
+        <button type="submit" name="actionDel" value="button" onclick="return confirm('Вы уверены?')">Удалить</button>
+    </p>
+}

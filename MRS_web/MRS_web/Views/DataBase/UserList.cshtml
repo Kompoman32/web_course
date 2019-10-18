@@ -1,0 +1,45 @@
+﻿@using MRS_web.Models.EDM
+@{
+    ViewBag.Title = "Список пользователей";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportUserList", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Логин</th>
+            <th>Полное имя</th>
+            <th>Администратор?</th>
+            <th>Количество счётчиков</th>
+        </tr>
+    </thead>
+    @{
+        foreach (User t in (IEnumerable<User>)ViewData["Users"])
+        {
+            <tr>
+                <td>@t.Login</td>
+                <td>@t.FullName</td>
+                @{
+                    string s = "bool" + t.AdminPrivileges;
+                    <td class=@s></td>
+                }
+                <td>@t.Meters.Count</td>
+                <td>@Html.ActionLink("Посмотреть...", "UserInfo", "Database", new { UserLogin = t.Login }, null)</td>
+
+            </tr>
+        }
+    }
+</table>
+

@@ -1,0 +1,67 @@
+﻿@using MRS_web.Models.EDM
+@{
+    ViewBag.Title = "Список счётчиков";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2 id="UserLogin" style="display: none">@ViewData["UserLogin"]</h2>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportMeterList", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Владелец</th>
+            <th>Название</th>
+            <th>Заводской номер</th>
+            <th>Дата производства</th>
+            <th>Тариф</th>
+            <th>Тип</th>
+            <th>Установлен</th>
+            <th>Требуется продление</th>
+        </tr>
+    </thead>
+
+    @foreach (Meter met in (IEnumerable<Meter>)ViewData["Meters"])
+    {
+        <tr>
+            <td>@met.User.FullName</td>
+            <td>@met.Name</td>
+            <td>@met.ProductionId</td>
+            <td>@met.Tariff</td>
+            <td>@met.Type</td>
+            <td>@met.ProductionDate.ToString("d")</td>
+            @{
+                string str = "";
+                if (met is InstalledMeter)
+                {
+                    str = (met as InstalledMeter).InstallDate.ToString("d");
+                    <td>@str</td>
+                }
+                else
+                {
+                    <td class="boolFalse"></td>
+                }
+
+                str = "bool";
+                if (met is InstalledMeter)
+                {
+                    str += ((InstalledMeter)met).ExpirationDate < DateTime.Now;
+                }
+
+                <td class=@str></td>
+            }
+            <td>@Html.ActionLink("Посмотреть...", "Meter", "Database", new { MeterId = met.ProductionId }, null)</td>
+        </tr>
+    }
+</table>

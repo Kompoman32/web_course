@@ -1,0 +1,605 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ModelStoreContainer">
+    <EntitySet Name="MeterSet" EntityType="Model.Store.MeterSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ParametrSet" EntityType="Model.Store.ParametrSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TypeSet" EntityType="Model.Store.TypeSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserSet" EntityType="Model.Store.UserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DocumentSet" EntityType="Model.Store.DocumentSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TariffSet" EntityType="Model.Store.TariffSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TimeSpanSet" EntityType="Model.Store.TimeSpanSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ReadingSet" EntityType="Model.Store.ReadingSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MeterSet_InstalledMeter" EntityType="Model.Store.MeterSet_InstalledMeter" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MeterParametr" EntityType="Model.Store.MeterParametr" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_MeterParametr_Meter" Association="Model.Store.FK_MeterParametr_Meter">
+      <End Role="Meter" EntitySet="MeterSet" />
+      <End Role="MeterParametr" EntitySet="MeterParametr" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MeterParametr_Parametr" Association="Model.Store.FK_MeterParametr_Parametr">
+      <End Role="Parametr" EntitySet="ParametrSet" />
+      <End Role="MeterParametr" EntitySet="MeterParametr" />
+    </AssociationSet>
+    <AssociationSet Name="MeterTariff" Association="Model.Store.MeterTariff">
+      <End Role="Meter" EntitySet="MeterSet" />
+      <End Role="Tariff" EntitySet="TariffSet" />
+    </AssociationSet>
+    <AssociationSet Name="TypeMeter" Association="Model.Store.TypeMeter">
+      <End Role="Type" EntitySet="TypeSet" />
+      <End Role="Meter" EntitySet="MeterSet" />
+    </AssociationSet>
+    <AssociationSet Name="MeterDocument" Association="Model.Store.MeterDocument">
+      <End Role="Meter" EntitySet="MeterSet" />
+      <End Role="Document" EntitySet="DocumentSet" />
+    </AssociationSet>
+    <AssociationSet Name="TariffTimeSpan" Association="Model.Store.TariffTimeSpan">
+      <End Role="Tariff" EntitySet="TariffSet" />
+      <End Role="TimeSpan" EntitySet="TimeSpanSet" />
+    </AssociationSet>
+    <AssociationSet Name="UserMeter" Association="Model.Store.UserMeter">
+      <End Role="User" EntitySet="UserSet" />
+      <End Role="Meter" EntitySet="MeterSet" />
+    </AssociationSet>
+    <AssociationSet Name="MeterReading" Association="Model.Store.MeterReading">
+      <End Role="Meter" EntitySet="MeterSet" />
+      <End Role="Reading" EntitySet="ReadingSet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InstalledMeter_inherits_Meter" Association="Model.Store.FK_InstalledMeter_inherits_Meter">
+      <End Role="Meter" EntitySet="MeterSet" />
+      <End Role="InstalledMeter" EntitySet="MeterSet_InstalledMeter" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="MeterSet">
+    <Key>
+      <PropertyRef Name="ProductionId" />
+    </Key>
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Discription" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SumReadings" Type="float" Nullable="false" />
+    <Property Name="Capacity" Type="float" Nullable="false" />
+    <Property Name="ProductionId" Type="bigint" Nullable="false" />
+    <Property Name="ProductionDate" Type="datetime" Nullable="false" />
+    <Property Name="Tariff_Id" Type="int" Nullable="false" />
+    <Property Name="Type_Id" Type="int" Nullable="false" />
+    <Property Name="User_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ParametrSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Measure" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TypeSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Unit" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Login" Type="nvarchar" Nullable="false" MaxLength="32" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FullName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AdminPrivileges" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DocumentSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Discription" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SigningDate" Type="datetime" Nullable="false" />
+    <Property Name="Meter_ProductionId" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TariffSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TimeSpanSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TimeStart" Type="time" Nullable="false" />
+    <Property Name="TimeEnd" Type="time" Nullable="false" />
+    <Property Name="Tariff_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ReadingSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="float" Nullable="false" />
+    <Property Name="TariffNumber" Type="int" Nullable="false" />
+    <Property Name="Meter_ProductionId" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MeterSet_InstalledMeter">
+    <Key>
+      <PropertyRef Name="ProductionId" />
+    </Key>
+    <Property Name="InstallDate" Type="datetime" Nullable="false" />
+    <Property Name="ExpirationDate" Type="datetime" Nullable="false" />
+    <Property Name="ProductionId" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MeterParametr">
+    <Key>
+      <PropertyRef Name="Meters_ProductionId" />
+      <PropertyRef Name="Parametrs_Id" />
+    </Key>
+    <Property Name="Meters_ProductionId" Type="bigint" Nullable="false" />
+    <Property Name="Parametrs_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="MeterTariff">
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="*" />
+    <End Role="Tariff" Type="Model.Store.TariffSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Tariff">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meter">
+        <PropertyRef Name="Tariff_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TypeMeter">
+    <End Role="Type" Type="Model.Store.TypeSet" Multiplicity="1" />
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Type">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meter">
+        <PropertyRef Name="Type_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MeterDocument">
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="1" />
+    <End Role="Document" Type="Model.Store.DocumentSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meter">
+        <PropertyRef Name="ProductionId" />
+      </Principal>
+      <Dependent Role="Document">
+        <PropertyRef Name="Meter_ProductionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TariffTimeSpan">
+    <End Role="Tariff" Type="Model.Store.TariffSet" Multiplicity="1" />
+    <End Role="TimeSpan" Type="Model.Store.TimeSpanSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tariff">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TimeSpan">
+        <PropertyRef Name="Tariff_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UserMeter">
+    <End Role="User" Type="Model.Store.UserSet" Multiplicity="1" />
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Meter">
+        <PropertyRef Name="User_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MeterReading">
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="1" />
+    <End Role="Reading" Type="Model.Store.ReadingSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meter">
+        <PropertyRef Name="ProductionId" />
+      </Principal>
+      <Dependent Role="Reading">
+        <PropertyRef Name="Meter_ProductionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MeterParametr_Meter">
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="1" />
+    <End Role="MeterParametr" Type="Model.Store.MeterParametr" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meter">
+        <PropertyRef Name="ProductionId" />
+      </Principal>
+      <Dependent Role="MeterParametr">
+        <PropertyRef Name="Meters_ProductionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MeterParametr_Parametr">
+    <End Role="MeterParametr" Type="Model.Store.MeterParametr" Multiplicity="*" />
+    <End Role="Parametr" Type="Model.Store.ParametrSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Parametr">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="MeterParametr">
+        <PropertyRef Name="Parametrs_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InstalledMeter_inherits_Meter">
+    <End Role="Meter" Type="Model.Store.MeterSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="InstalledMeter" Type="Model.Store.MeterSet_InstalledMeter" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Meter">
+        <PropertyRef Name="ProductionId" />
+      </Principal>
+      <Dependent Role="InstalledMeter">
+        <PropertyRef Name="ProductionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="ModelContainer1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="MeterSet" EntityType="Model.Meter" />
+          <EntitySet Name="ParametrSet" EntityType="Model.Parametr" />
+          <EntitySet Name="TypeSet" EntityType="Model.Type" />
+          <EntitySet Name="UserSet" EntityType="Model.User" />
+          <EntitySet Name="DocumentSet" EntityType="Model.Document" />
+          <EntitySet Name="TariffSet" EntityType="Model.Tariff" />
+          <EntitySet Name="TimeSpanSet" EntityType="Model.TimeSpan" />
+          <AssociationSet Name="MeterParametr" Association="Model.MeterParametr">
+            <End Role="Meter" EntitySet="MeterSet" />
+            <End Role="Parametr" EntitySet="ParametrSet" />
+          </AssociationSet>
+          <AssociationSet Name="MeterTariff" Association="Model.MeterTariff">
+            <End Role="Meter" EntitySet="MeterSet" />
+            <End Role="Tariff" EntitySet="TariffSet" />
+          </AssociationSet>
+          <AssociationSet Name="TypeMeter" Association="Model.TypeMeter">
+            <End Role="Type" EntitySet="TypeSet" />
+            <End Role="Meter" EntitySet="MeterSet" />
+          </AssociationSet>
+          <AssociationSet Name="MeterDocument" Association="Model.MeterDocument">
+            <End Role="Meter" EntitySet="MeterSet" />
+            <End Role="Document" EntitySet="DocumentSet" />
+          </AssociationSet>
+          <AssociationSet Name="TariffTimeSpan" Association="Model.TariffTimeSpan">
+            <End Role="Tariff" EntitySet="TariffSet" />
+            <End Role="TimeSpan" EntitySet="TimeSpanSet" />
+          </AssociationSet>
+          <AssociationSet Name="UserMeter" Association="Model.UserMeter">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="Meter" EntitySet="MeterSet" />
+          </AssociationSet>
+          <EntitySet Name="ReadingSet" EntityType="Model.Reading" />
+          <AssociationSet Name="MeterReading" Association="Model.MeterReading">
+            <End Role="Meter" EntitySet="MeterSet" />
+            <End Role="Reading" EntitySet="ReadingSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Meter">
+          <Key>
+            <PropertyRef Name="ProductionId" />
+          </Key>
+          <Property Name="Name" Type="String" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="Discription" Type="String" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="SumReadings" Type="Double" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="Capacity" Type="Double" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <NavigationProperty Name="Parametrs" Relationship="Model.MeterParametr" FromRole="Meter" ToRole="Parametr" />
+          <NavigationProperty Name="Tariff" Relationship="Model.MeterTariff" FromRole="Meter" ToRole="Tariff" />
+          <NavigationProperty Name="Type" Relationship="Model.TypeMeter" FromRole="Meter" ToRole="Type" />
+          <NavigationProperty Name="Documents" Relationship="Model.MeterDocument" FromRole="Meter" ToRole="Document" />
+          <NavigationProperty Name="User" Relationship="Model.UserMeter" FromRole="Meter" ToRole="User" />
+          <Property Name="ProductionId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" cg:GetterAccess="Public" cg:SetterAccess="Public" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Name="ProductionDate" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Readings" Relationship="Model.MeterReading" FromRole="Meter" ToRole="Reading" />
+        </EntityType>
+        <EntityType Name="Parametr">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="Measure" Type="String" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <NavigationProperty Name="Meters" Relationship="Model.MeterParametr" FromRole="Parametr" ToRole="Meter" />
+        </EntityType>
+        <EntityType Name="Type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="Unit" Type="String" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <NavigationProperty Name="Meters" Relationship="Model.TypeMeter" FromRole="Type" ToRole="Meter" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" cg:SetterAccess="Public" MaxLength="32" cg:GetterAccess="Public" />
+          <Property Name="Password" Type="String" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="FullName" Type="String" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="AdminPrivileges" Type="Boolean" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <NavigationProperty Name="Meters" Relationship="Model.UserMeter" FromRole="User" ToRole="Meter" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" Type="Int64" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="Title" Type="String" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" />
+          <Property Name="Discription" Type="String" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" />
+          <NavigationProperty Name="Meter" Relationship="Model.MeterDocument" FromRole="Document" ToRole="Meter" cg:GetterAccess="Public" />
+          <Property Name="SigningDate" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tariff">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <NavigationProperty Name="Meters" Relationship="Model.MeterTariff" FromRole="Tariff" ToRole="Meter" />
+          <NavigationProperty Name="TimeSpans" Relationship="Model.TariffTimeSpan" FromRole="Tariff" ToRole="TimeSpan" />
+        </EntityType>
+        <EntityType Name="TimeSpan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" cg:GetterAccess="Public" cg:SetterAccess="Public" />
+          <Property Name="TimeStart" Type="Time" Nullable="false" annotation:StoreGeneratedPattern="None" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="TimeEnd" Type="Time" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <NavigationProperty Name="Tariff" Relationship="Model.TariffTimeSpan" FromRole="TimeSpan" ToRole="Tariff" />
+        </EntityType>
+        <Association Name="MeterParametr">
+          <End Type="Model.Meter" Role="Meter" Multiplicity="*" />
+          <End Type="Model.Parametr" Role="Parametr" Multiplicity="*" />
+        </Association>
+        <Association Name="MeterTariff">
+          <End Type="Model.Meter" Role="Meter" Multiplicity="*" />
+          <End Type="Model.Tariff" Role="Tariff" Multiplicity="1" />
+        </Association>
+        <Association Name="TypeMeter">
+          <End Type="Model.Type" Role="Type" Multiplicity="1" />
+          <End Type="Model.Meter" Role="Meter" Multiplicity="*" />
+        </Association>
+        <Association Name="MeterDocument">
+          <End Type="Model.Meter" Role="Meter" Multiplicity="1" />
+          <End Type="Model.Document" Role="Document" Multiplicity="*" />
+        </Association>
+        <EntityType Name="InstalledMeter" BaseType="Model.Meter">
+          <Property Name="InstallDate" Type="DateTime" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+          <Property Name="ExpirationDate" Type="DateTime" Nullable="false" cg:SetterAccess="Public" cg:GetterAccess="Public" />
+        </EntityType>
+        <Association Name="TariffTimeSpan">
+          <End Type="Model.Tariff" Role="Tariff" Multiplicity="1" />
+          <End Type="Model.TimeSpan" Role="TimeSpan" Multiplicity="*" />
+        </Association>
+        <Association Name="UserMeter">
+          <End Type="Model.User" Role="User" Multiplicity="1" />
+          <End Type="Model.Meter" Role="Meter" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Reading">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Meter" Relationship="Model.MeterReading" FromRole="Reading" ToRole="Meter" />
+          <Property Name="Value" Type="Double" Nullable="false" />
+          <Property Name="TariffNumber" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="MeterReading">
+          <End Type="Model.Meter" Role="Meter" Multiplicity="1" />
+          <End Type="Model.Reading" Role="Reading" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="ModelContainer1">
+    <EntitySetMapping Name="MeterSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Meter)">
+        <MappingFragment StoreEntitySet="MeterSet">
+          <ScalarProperty Name="ProductionId" ColumnName="ProductionId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Discription" ColumnName="Discription" />
+          <ScalarProperty Name="SumReadings" ColumnName="SumReadings" />
+          <ScalarProperty Name="Capacity" ColumnName="Capacity" />
+          <ScalarProperty Name="ProductionDate" ColumnName="ProductionDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Model.InstalledMeter)">
+        <MappingFragment StoreEntitySet="MeterSet_InstalledMeter">
+          <ScalarProperty Name="ProductionId" ColumnName="ProductionId" />
+          <ScalarProperty Name="InstallDate" ColumnName="InstallDate" />
+          <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ParametrSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Parametr)">
+        <MappingFragment StoreEntitySet="ParametrSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Measure" ColumnName="Measure" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TypeSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Type)">
+        <MappingFragment StoreEntitySet="TypeSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Unit" ColumnName="Unit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.User)">
+        <MappingFragment StoreEntitySet="UserSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Login" ColumnName="Login" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="AdminPrivileges" ColumnName="AdminPrivileges" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DocumentSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Document)">
+        <MappingFragment StoreEntitySet="DocumentSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Discription" ColumnName="Discription" />
+          <ScalarProperty Name="SigningDate" ColumnName="SigningDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TariffSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Tariff)">
+        <MappingFragment StoreEntitySet="TariffSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TimeSpanSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.TimeSpan)">
+        <MappingFragment StoreEntitySet="TimeSpanSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="TimeStart" ColumnName="TimeStart" />
+          <ScalarProperty Name="TimeEnd" ColumnName="TimeEnd" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ReadingSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model.Reading)">
+        <MappingFragment StoreEntitySet="ReadingSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="TariffNumber" ColumnName="TariffNumber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="MeterParametr" TypeName="Model.MeterParametr" StoreEntitySet="MeterParametr">
+      <EndProperty Name="Meter">
+        <ScalarProperty Name="ProductionId" ColumnName="Meters_ProductionId" />
+      </EndProperty>
+      <EndProperty Name="Parametr">
+        <ScalarProperty Name="Id" ColumnName="Parametrs_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MeterTariff" TypeName="Model.MeterTariff" StoreEntitySet="MeterSet">
+      <EndProperty Name="Tariff">
+        <ScalarProperty Name="Id" ColumnName="Tariff_Id" />
+      </EndProperty>
+      <EndProperty Name="Meter">
+        <ScalarProperty Name="ProductionId" ColumnName="ProductionId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TypeMeter" TypeName="Model.TypeMeter" StoreEntitySet="MeterSet">
+      <EndProperty Name="Type">
+        <ScalarProperty Name="Id" ColumnName="Type_Id" />
+      </EndProperty>
+      <EndProperty Name="Meter">
+        <ScalarProperty Name="ProductionId" ColumnName="ProductionId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MeterDocument" TypeName="Model.MeterDocument" StoreEntitySet="DocumentSet">
+      <EndProperty Name="Meter">
+        <ScalarProperty Name="ProductionId" ColumnName="Meter_ProductionId" />
+      </EndProperty>
+      <EndProperty Name="Document">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TariffTimeSpan" TypeName="Model.TariffTimeSpan" StoreEntitySet="TimeSpanSet">
+      <EndProperty Name="Tariff">
+        <ScalarProperty Name="Id" ColumnName="Tariff_Id" />
+      </EndProperty>
+      <EndProperty Name="TimeSpan">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserMeter" TypeName="Model.UserMeter" StoreEntitySet="MeterSet">
+      <EndProperty Name="User">
+        <ScalarProperty Name="Id" ColumnName="User_Id" />
+      </EndProperty>
+      <EndProperty Name="Meter">
+        <ScalarProperty Name="ProductionId" ColumnName="ProductionId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MeterReading" TypeName="Model.MeterReading" StoreEntitySet="ReadingSet">
+      <EndProperty Name="Meter">
+        <ScalarProperty Name="ProductionId" ColumnName="Meter_ProductionId" />
+      </EndProperty>
+      <EndProperty Name="Reading">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9c3e55e1193f44b8bd764d6c64d285e3" Name="Diagram1" ZoomLevel="82">
+        <EntityTypeShape EntityType="Model.Meter" Width="1.5" PointX="2.875" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Parametr" Width="1.5" PointX="8.5" PointY="2.375" IsExpanded="true" FillColor="0, 122, 204" />
+        <EntityTypeShape EntityType="Model.Type" Width="1.5" PointX="5" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="0.5" PointY="0.5" IsExpanded="true" FillColor="0, 122, 204" />
+        <EntityTypeShape EntityType="Model.Document" Width="1.5" PointX="0.5" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Tariff" Width="1.5" PointX="4.625" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.TimeSpan" Width="1.5" PointX="6.625" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.InstalledMeter" Width="1.5" PointX="2.875" PointY="4.25" IsExpanded="true" />
+        <InheritanceConnector EntityType="Model.InstalledMeter" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.MeterParametr" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.MeterTariff" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.TypeMeter" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.MeterDocument" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="Model.TariffTimeSpan" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.UserMeter" />
+        <EntityTypeShape EntityType="Model.Reading" Width="1.5" PointX="7" PointY="0.5" />
+        <AssociationConnector Association="Model.MeterReading" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

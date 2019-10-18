@@ -1,0 +1,39 @@
+﻿@using MRS_web.Models.EDM
+@using Type = MRS_web.Models.EDM.Type
+@{
+    ViewBag.Title = "Список типов счётчиков";
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportTypesList", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Единица измерения</th>
+            <th>Количество счётчиков</th>
+        </tr>
+    </thead>
+    @{
+        foreach (Type t in (IEnumerable<Type>)ViewData["Types"])
+        {
+            <tr>
+                <td>@t.Name</td>
+                <td>@t.Unit</td>
+                <td>@t.Meters</td>
+            </tr>
+        }
+    }
+</table>
+

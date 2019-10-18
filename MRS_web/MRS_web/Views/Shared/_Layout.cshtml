@@ -1,0 +1,79 @@
+﻿@using MRS_web.Models.EDM
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title – приложение ASP.NET</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <img src=~/Images/Logo.png width=30 height=30/>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul id="nav-list" class="nav navbar-nav">
+                    @{
+                        if (Session["UserLogin"] != null)
+                        {
+                            if (Session["UserAdmin"].ToString() == "true")
+                            {
+                                <li>@Html.ActionLink("О себе", "UserInfo", "Database")</li>
+                                <li>@Html.ActionLink("База данных", "DataBase", "Admin")</li>
+                                <li>@Html.ActionLink("Добавить счётчик", "AddMeter", "Admin")</li>
+                                <li>@Html.ActionLink("Продлить счётчик", "ExtendMeter", "Admin")</li>
+                                <li>@Html.ActionLink("Удалить счётчик", "DeleteMeter", "Admin")</li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink("О себе", "UserInfo", "Database")</li>
+                                <li>@Html.ActionLink("Список счётчиков", "MetersList", "Database")</li>
+                                <li>@Html.ActionLink("Добавить счётчик", "AddMeter", "User")</li>
+                            }
+
+                            <li>@Html.ActionLink("Выйти", "SignIn", "Home", new { signOut = true }, null)</li>
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("Войти", "SignIn", "Home")</li>
+                            <li>@Html.ActionLink("Зарегестрироваться", "SignUp", "Home")</li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+@RenderBody()
+    
+<div class="container body-content">
+    <hr style="color:white"/>
+        @{
+            if (Session["UserLogin"] != null)
+            {
+                string s = "Вы вошли как: ";
+                s += Session["UserAdmin"].ToString() == "true" ? "Администратор - " : "Пользователь - ";
+                s += Session["UserFullName"];
+                <div style="color: var(--link); font-size: 40px;">
+                    @s
+                </div>
+            }
+        }
+
+        <footer >
+            <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
+        </footer>
+</div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

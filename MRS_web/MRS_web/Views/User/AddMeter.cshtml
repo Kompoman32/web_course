@@ -1,0 +1,352 @@
+﻿@using MRS_web.Models.EDM
+
+@Scripts.Render("~/scripts/jquery-1.10.2.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#tariffCount').on('change', function (e) {
+            e.preventDefault();
+            var name = $('#tariffCount').val();
+            name=encodeURIComponent(name);
+            $('#triffesResult').load('@Url.Action("Tariffes", "User")?Count=' + name);
+        });
+
+        $('#tariffCount').trigger('change');
+
+        // Документы
+
+        $('#removeDocuments').click(function d(e) {
+            e.preventDefault();
+            s = "";
+            count = -1;
+            document.getElementsByName('document').forEach(function (v, i) { if (v.selected) {s+='&documentId='+i; count++} });
+            if (count == -1) return false;
+            if (!confirm('Вы уверены? Удалить ' + (count + 1) + ' документов?'))
+            {
+                $('#DocumentTitle').val = '';
+                $('#DocumentDisctiption').val = '';
+                $('#DocumentDate').val = '';
+                return false;
+            }
+            alert('start');
+            $('#documentsResult').load('@Url.Action("RemoveDocuments", "User")?'+s);
+            alert('fin');
+        });
+
+        $('#NewDocumentSaveButton').click(function (e) {
+            e.preventDefault();
+            var title = encodeURIComponent($('#DocumentTitle').val());
+            var discription = encodeURIComponent($('#DocumentDisctiption').val());
+            var date = encodeURIComponent($('#DocumentDate').val());
+            $('#documentsResult').load('@Url.Action("NewDocumentSave", "User")?Title=' + title + '&Discription=' + discription + '&Date=' + date);
+            document.getElementById('modal').style.display = 'none';
+            $('#DocumentTitle').val = '';
+            $('#DocumentDisctiption').val = '';
+            $('#DocumentDate').val = '';
+        });
+
+        $('#addNewDocument').click(function(e) {
+            e.preventDefault();
+            document.getElementById('modal').style.display = 'block';
+        });
+
+        // Параметры
+        $('#parametrToMeter').click(function(e) {
+            e.preventDefault();
+
+            $('[name = "stockParameter"]').each(function () {
+                if (this.selected) {
+                    $('#meterParameters').append(this);
+                    this.setAttribute("name", 'metParameter');
+                    this.selected=false;
+                }
+            });
+        });
+
+        $('#parametrToStock').click(function(e) {
+            e.preventDefault();
+
+            $('[name = "metParameter"]').each(function () {
+                if (this.selected) {
+                    $('#stockParameters').append(this);
+                    this.setAttribute("name", 'stockParameter');
+                    this.selected = false;
+                }
+            });
+        });
+
+        //небольшой костыль
+        $('#submitBut').click(function(e) {
+            $('[name = "metParameter"]').each(function() {
+                this.selected = true;
+            });
+        })
+    });
+</script>
+
+<style>
+    /* The Modal (background) */
+    .myModal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .myModal-content {
+        background-color: #535353;
+        border: 1px solid #888;
+        width: 30%;
+        height: auto;
+        overflow: auto;
+    }
+
+    /* The Close Button */
+    .myclose {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        margin: 5px
+    }
+
+        .myclose:hover,
+        .myclose:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+@{
+    ViewBag.Title = "Добавление счётчика";
+    IEnumerable<Tariff> tariffes = ViewData["Tariffs"] as IEnumerable<Tariff>;
+    IEnumerable<Document> documents = ViewData["Documents"] as IEnumerable<Document>;
+    IEnumerable<MRS_web.Models.EDM.Type> types = ViewData["Types"] as IEnumerable<MRS_web.Models.EDM.Type>;
+    string[] readings = ViewData["Readings"]?.ToString().Split(',');
+    IEnumerable<Parametr> meterParameters = ViewData["MeterParameters"] as IEnumerable<Parametr>;
+    IEnumerable<Parametr> stockParameters = ViewData["StockParameters"] as IEnumerable<Parametr>;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<hr />
+@using (Html.BeginForm()) { 
+<div>
+    <table class="freeTable">
+        <tr>
+            <!--Основная информация о счётчике-->
+            <td>
+                <table class="InfoTable">
+                    <tr>
+                        <td>Название</td>
+                        <td>
+                            <input name="Name" value=@ViewData["Name"] />
+                            @Html.ValidationMessage("Name", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Описание</td>
+                        <td>
+                            <input name="Description" value=@ViewData["Description"] />
+                            @Html.ValidationMessage("Description", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Тип</td>
+                        <td>
+                            <select name="TypeId">
+                                @if (types != null)
+                                {
+                                    foreach (var t in types)
+                                    {
+                                        var s = ViewData["TypeId"]?.ToString() == t.Id.ToString() ? "selected" : "";
+                                        <option value=@t.Id @s>@t</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Размерность табло</td>
+                        <td>
+                            <table style="width: 100%; "><tr><td><h4 style="text-align: center; margin:0">Количество знаков (макс. 7 до и после)</h4></td></tr></table>
+                            <table>
+                                <tr>
+                                    <td style="alignment: right">до запятой</td>
+                                    <td>
+                                        <input name="CapacityBefComma" type="number" min="1" max="7" value=@ViewData["CapacityBefComma"] />
+                                        @Html.ValidationMessage("CapacityBefComma", new {@class = "text-danger"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="alignment: right">после запятой</td>
+                                    <td>
+                                        <input name="CapacityAftComma" type="number" min="0" value=@ViewData["CapacityAftComma"]/>
+                                        @Html.ValidationMessage("CapacityAftComma", new {@class = "text-danger"})
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Заводской номер</td>
+                        <td>
+                            <input name="ProductionId" type="number" min="0" max=@long.MaxValue value=@ViewData["ProductionId"] />
+                            @Html.ValidationMessage("ProductionId", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Дата производства</td>
+                        <td>
+                            @{var st = (ViewData["ProductionDate"] as DateTime?)?.ToString("yyyy-MM-dd");
+                                <input name="ProductionDate" type="date" value=@st/>
+                                @Html.ValidationMessage("ProductionDate", new { @class = "text-danger" })}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <!--Тарифы-->
+            <td>
+                <div>
+                    <table class="InfoTable" style=" margin-bottom:0">
+                        <tr>
+                            <td>Количество тарифов</td>
+                            <td>
+                                <select id="tariffCount" name="TariffId">
+                                        @foreach (Tariff t in tariffes)
+                                        {
+                                            var str = ViewData["TariffId"]?.ToString() == t.Id.ToString()?"selected":"";
+                                            <option value=@t.Id @str>@t</option>
+                                        }
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Показания по тарифу 1</td>
+                            <td>
+                                @{
+                                    var stri = readings?.First();
+                                    <input name="Reading" type="number" step="any" min="0" max=@double.MaxValue value=@stri />}
+                                    @Html.ValidationMessage("Reading0", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div id="triffesResult"></div>
+                    </div>
+                </td>
+        </tr>
+
+        <tr>
+            <!--Документы-->
+            <td>
+                <div style="margin: 5px"><h3>Документы</h3></div>
+                <div id="documentsResult">
+                    <select multiple name="documents" style="width: 100%">
+                        @if (documents != null)
+                        {
+                            int counter = 0;
+                            foreach (var d in documents)
+                            {
+                                <option name="document" value=@counter>@d</option>
+                                counter++;
+                            }
+                        }
+                    </select>
+                </div>
+                <table>
+                    <tr>
+                        <td>
+                            <button id="addNewDocument">
+                                Добавить новый
+                            </button>
+                        </td>
+                        <td><button id="removeDocuments">Удалить выбранный</button></td>
+                    </tr>
+                </table>
+                <div id="modal" class="myModal">
+                    <center>
+                        <div id="modalContent" class="myModal-content">
+
+                            <span id="closeButton" class="myclose" onclick="if (confirm('Закрыть не сохраняя?')) {document.getElementById('modal').style.display = 'none';return true; } else return false;">&times;</span>
+
+                            <h2>Создание документа</h2>
+                            <table class="InfoTable">
+                                <tr>
+                                    <td>Заголовок</td>
+                                    <td><input id="DocumentTitle" name="DocumentTitle" type="text"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Текст документа</td>
+                                    <td><textarea id="DocumentDisctiption" name="DocumentDisctiption" type="text" style="height: 300px;width: 100%" ></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>Дата подписания</td>
+                                    <td><input id="DocumentDate" name="DocumentDate" type="date" style="float: right"/></td>
+                                </tr>
+                            </table>
+
+                            <button id="NewDocumentSaveButton" style="float: right; margin: 10px">Сохранить</button>
+                        </div>
+                    </center>
+                </div>
+
+            </td>
+            <!--Параметры-->
+            <td>
+                <div style="margin: 5px">
+                    <h3>Параметры</h3></div>
+                <div style="display: flex; justify-content: center; align-items: center; height: 100%">
+                    <select multiple id="meterParameters" name="meterParameters" style="width: 45%; margin: 5px;">
+                        @if (meterParameters != null)
+                        {
+                            foreach (var par in meterParameters)
+                            {
+                                <option name="metParameter" value=@par.Id>@par</option>
+                            }
+                        }
+                    </select>
+                    <div style="width: 10%; margin: 5px; display: flex; justify-content: center; flex-direction: column">
+                        <button id="parametrToMeter" style="font-size: 16px;">🠜</button>
+                        <br/>
+                        <button id="parametrToStock" style="font-size: 16px">🠞</button>
+                    </div>
+                    <select multiple id="stockParameters" style="width: 45%; margin: 5px;">
+                        @if (stockParameters != null)
+                        {
+                            foreach (var par in stockParameters)
+                            {
+                                <option name="stockParameter" value=@par.Id>@par</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </td>
+        </tr>
+    </table>
+   
+    <button type="submit" id="submitBut" style="margin: 5px">Добавить Счётчик</button>
+</div>
+
+}
+
+
+
+
+
+
+

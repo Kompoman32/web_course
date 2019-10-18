@@ -1,0 +1,32 @@
+﻿:root {
+    --font-size: 22px;
+    --font-family: "Comic Sans MS";
+
+    --backclr: #7d029f;
+    --fontclr: #effd32;
+
+    --link: #4e0;
+    --linkHov: lime;
+    --error: red;
+
+    --border: white;
+    --tableHeadBack: #b00;
+    --tableHeadFont: #fff;
+    --tableEvenBack: #044;
+    --tableEvenFont:  #EE0;
+    --tableOddBack: #000;
+    --tableOddFont: #DD0;
+    --tableFootBack: #555;
+    --tableFootFont: #fff;
+
+    --butBack:#b00;
+    --butClr:#fff;
+    --butBack-Hov:#4d0000;
+    --butClr-Hov:#ffffff;
+
+    --selectBack: #00f;
+    --selectClr: #fff;
+
+    --inputBack: #0f5;
+    --inputClr: #000;
+}

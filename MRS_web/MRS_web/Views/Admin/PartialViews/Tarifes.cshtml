@@ -1,0 +1,24 @@
+﻿@using MRS_web.Models.EDM
+@model int?
+
+@{
+    string[] readings = Session["AddMetReadings"]?.ToString().Split(',');
+}
+
+@if (Model != null)
+{
+    <table style="margin-top: 0" class="InfoTable">
+        @for (int i = 2; i <= Model; i++)
+        {
+            var ts = readings?.ElementAt(i - 1);
+            <tr>
+                <td>Показания по тарифу @i</td>
+                <td>
+                    <input name="Reading" type="number" min="0" step="any" max=@double.MaxValue value=@ts />
+                    @Html.ValidationMessage("Reading" + (i - 1), new {@class = "text-danger"})
+                </td>
+            </tr>
+        }
+        
+    </table>
+}

@@ -1,0 +1,43 @@
+﻿@using MRS_web.Models.EDM
+
+@{
+    ViewBag.Title = "Список параметров";
+
+    IEnumerable<Parametr> parameters = ViewData["Parameters"] as IEnumerable<Parametr>;
+}
+
+<h3>
+    <a class="backButton" href="javascript:history.go(-1)">Назад</a>
+</h3>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("ExportParameterList", "Database"))
+{
+    <div style="padding: 5px">
+        <button  class="excelButton"><img width=30 height=30 src="~/Images/Excel.png"></button>
+    </div>
+}
+
+<table>
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Значение</th>
+        <th>Количество счётчиков</th>
+    </tr>
+    </thead>
+    @if (parameters != null)
+    {
+        foreach (var par in parameters)
+        {
+            <tr>
+                <td>@par.Name</td>
+                <td>@par.Measure</td>
+                <td>@par.Meters.Count</td>
+            </tr>
+        }
+    }
+</table>
+
+

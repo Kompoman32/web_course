@@ -25,6 +25,11 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 1px;
 }
 
+h1 {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
 body {
     font-family: 'Open Sans', arial, sans-serif;
     font-size: 14px;
@@ -45,3 +50,7 @@ header:after, .container:after, footer:after, .widget-posts-list li:after, #subs
     max-width: 960px;
     padding: 0 15px;
 } 
+
+ol {
+    margin-left: 25px;
+}
